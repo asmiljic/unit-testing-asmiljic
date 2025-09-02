@@ -1,6 +1,6 @@
 import { GlobalCounter } from './index';
 
-describe('GlobalCounter', () => {
+describe.skip('GlobalCounter', () => {
   it('has initial value "0"', () => {
     // write isolated test
   });

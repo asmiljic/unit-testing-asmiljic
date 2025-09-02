@@ -8,7 +8,7 @@ class StubApiService implements Partial<ApiService> {
   }
 }
 
-describe('UserService - getUserName', () => {
+describe.skip('UserService - getUserName', () => {
   it('should return full name from stubbed ApiService', async () => {
     // TODO: implement test
   });

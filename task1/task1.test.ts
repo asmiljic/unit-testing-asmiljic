@@ -5,7 +5,7 @@ jest.mock('tasks/task1/fetchIsUserNameValid', () => ({
   fetchIsUserNameAvailable: jest.fn(),
 }));
 
-const mockedFetchIsUserNameAvailable = fetchIsUserNameAvailable as jest.Mock;
+const mockedFetchIsUserNameAvailable = fetchIsUserNameAvailable as jest.MockedFunction<typeof fetchIsUserNameAvailable>;
 
 describe('validateUserName', () => {
   beforeEach(() => {
@@ -51,17 +51,21 @@ describe('validateUserName', () => {
   });
 
   it('Returns false if fetchIsUserNameAvailable throws an error', async () => {
-    jest.spyOn(console, 'error').mockImplementation(() => {});
-
-    mockedFetchIsUserNameAvailable.mockImplementationOnce(() => {
-      return Promise.reject(new Error('Network error'));
-    });
-
-    const result = await validateUserName('ValidUser').catch(() => false);
-
+    const consoleErrorSpy = jest.spyOn(console, 'error').mockImplementation(() => {});
+  
+    mockedFetchIsUserNameAvailable.mockRejectedValueOnce(new Error('Network error'));
+  
+    let result: boolean;
+  
+    try {
+      result = await validateUserName('ValidUser');
+    } catch {
+      result = false;
+    }
+  
     expect(result).toBe(false);
     expect(mockedFetchIsUserNameAvailable).toHaveBeenCalledWith('ValidUser');
-
-    (console.error as jest.Mock).mockRestore();
+  
+    consoleErrorSpy.mockRestore();
   });
 });
